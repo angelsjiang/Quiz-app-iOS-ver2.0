@@ -17,14 +17,8 @@ class FLBController: UIViewController, UITextFieldDelegate {
     
     // need a score board to sync
     var FLBScore: Int = 0
-    
-    let FLBQuestions: [String] = [
-        "How many elements are on the Periodic table?",
-        "How many members are in the K-pop group named BTS?",
-        "On average, how many seeds does a strawberry have on its surface?"
-    ]
-    
-    let answers: [String] = ["118", "7", "200"]
+        
+    var FLBQuestions = TriviaQuestionsStock.sharedInstance
     
     var currentQuestionIndex: Int = 0
     
@@ -58,7 +52,7 @@ class FLBController: UIViewController, UITextFieldDelegate {
     
     @IBAction func checkForEmpty(_ sender: UIButton) {
         
-        if usrData.text == answers[currentQuestionIndex] {
+        if usrData.text == FLBQuestions.questionArray[currentQuestionIndex].answer {
             FLBScore += 1
             print("score is: " , FLBScore)
             Resources.resources.flbScore = FLBScore
@@ -80,7 +74,7 @@ class FLBController: UIViewController, UITextFieldDelegate {
 
         }
         
-        if currentQuestionIndex >= (FLBQuestions.count - 1) {
+        if currentQuestionIndex >= (FLBQuestions.questionArray.count - 1) {
             print("in checkForEmpty if: ", currentQuestionIndex)
 
             FLBNextBtn.isEnabled = false
@@ -112,9 +106,9 @@ class FLBController: UIViewController, UITextFieldDelegate {
 
         currentQuestionIndex += 1
 
-        if currentQuestionIndex < FLBQuestions.count {
+        if currentQuestionIndex < FLBQuestions.questionArray.count {
             // need to find a way to prevent index going out of bound
-            FLBQuestionLabel.text = FLBQuestions[currentQuestionIndex]
+            FLBQuestionLabel.text = FLBQuestions.questionArray[currentQuestionIndex].question
             usrData.text = ""
             
             FLBNextBtn.isEnabled = false
@@ -140,9 +134,10 @@ class FLBController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        FLBQuestionLabel.text = FLBQuestions[0]
+        FLBQuestionLabel.text = FLBQuestions.questionArray[0].question
         
         FLBNextBtn.isEnabled = false
         FLBNextBtn.alpha = 0.3
     }
+    
 }
