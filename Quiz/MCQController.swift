@@ -16,8 +16,6 @@ class MCQController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSou
     @IBOutlet weak var answers: UIPickerView!
     
 
-    var MCQScore: Int = 0
-
     let questions: [String] = [
         "How many stripes are on the American flag?",
         "How many wisdom teeth does the average human have?",
@@ -45,8 +43,7 @@ class MCQController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSou
     
     @IBAction func checkForEmpty(_ sender: UIButton) {
         if usrChoice == correctAnswer[currentQuestionIndex] {
-            MCQScore += 1
-            Resources.resources.mcqScore = MCQScore
+            Resources.resources.mcqScore += 1
             Resources.resources.correctAns += 1
             
             correctAlert.setValue(correctAlertContent, forKey: "attributedTitle")
@@ -54,7 +51,6 @@ class MCQController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSou
                 self.correctAlert.view.superview?.isUserInteractionEnabled = true
                 self.correctAlert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
             })
-            print("Score is: ", MCQScore)
         }
         else {
             
@@ -133,6 +129,24 @@ class MCQController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSou
         
         nextBtn.isEnabled = false
         nextBtn.alpha = 0.3
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if Resources.resources.MCQReset {
+            currentQuestionIndex = 0
+            
+            questionLabel.text = questions[currentQuestionIndex]
+            answers.reloadAllComponents()
+            answers.selectRow(0, inComponent: 0, animated: true)
+            
+            nextBtn.isEnabled = false
+            nextBtn.alpha = 0.3
+            submitBtn.isEnabled = true
+            submitBtn.alpha = 1
+            
+            Resources.resources.MCQReset = false
+        }
     }
     
     

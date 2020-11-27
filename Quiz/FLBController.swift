@@ -15,8 +15,6 @@ class FLBController: UIViewController, UITextFieldDelegate {
     @IBOutlet var FLBSubmitBtn: UIButton!
     @IBOutlet var usrData: UITextField!
     
-    // need a score board to sync
-    var FLBScore: Int = 0
         
     var FLBQuestions = TriviaQuestionsStock.sharedInstance
     
@@ -49,13 +47,14 @@ class FLBController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func detectChange() {
+        print("hello!")
+    }
     
     @IBAction func checkForEmpty(_ sender: UIButton) {
         
         if usrData.text == FLBQuestions.questionArray[currentQuestionIndex].answer {
-            FLBScore += 1
-            print("score is: " , FLBScore)
-            Resources.resources.flbScore = FLBScore
+            Resources.resources.flbScore += 1
             Resources.resources.correctAns += 1
             
             correctAlert.setValue(correctAlertContent, forKey: "attributedTitle")
@@ -126,6 +125,18 @@ class FLBController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    
+    @IBAction func reset(_ sender: UIButton) {
+        
+        currentQuestionIndex = 0
+        FLBQuestionLabel.text = FLBQuestions.questionArray[currentQuestionIndex].question
+        
+        FLBNextBtn.isEnabled = false
+        FLBNextBtn.alpha = 0.3
+
+    }
+    
+    
     @IBAction func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         usrData.resignFirstResponder()
     }
@@ -134,10 +145,37 @@ class FLBController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        FLBQuestionLabel.text = FLBQuestions.questionArray[0].question
+        FLBQuestionLabel.text = FLBQuestions.questionArray[currentQuestionIndex].question
         
         FLBNextBtn.isEnabled = false
         FLBNextBtn.alpha = 0.3
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+
+        print("from FLBController: ", currentQuestionIndex)
+        FLBQuestions = TriviaQuestionsStock.sharedInstance
+        FLBQuestionLabel.text = FLBQuestions.questionArray[currentQuestionIndex].question
+        
+        // if reset is true
+        if Resources.resources.FLBReset {
+            currentQuestionIndex = 0
+            FLBQuestionLabel.text = FLBQuestions.questionArray[currentQuestionIndex].question
+            
+            usrData.text = ""
+            
+            FLBNextBtn.isEnabled = false
+            FLBNextBtn.alpha = 0.3
+            
+            FLBSubmitBtn.isEnabled = true
+            FLBSubmitBtn.alpha = 1
+
+            
+            // set it to false so it doesnt reset every time
+            Resources.resources.FLBReset = false
+            
+        }
+    }
 }

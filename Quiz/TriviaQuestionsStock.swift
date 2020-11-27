@@ -11,7 +11,11 @@ class TriviaQuestionsStock {
     
     static let sharedInstance = TriviaQuestionsStock()
     
-    var questionArray = [TriviaQuestion]()
+    var questionArray = [TriviaQuestion]() {
+        didSet {
+            print("something changed!")
+        }
+    }
     
     // create
     func createQuestion(question: String, answer: String) {
@@ -21,7 +25,7 @@ class TriviaQuestionsStock {
         
     }
     
-    // populate the array
+    // pre-populate the array
     init() {
         createQuestion(question: "How many elements are on the Periodic table?", answer: "118")
         createQuestion(question: "How many members are in the K-pop group named BTS?", answer: "7")
